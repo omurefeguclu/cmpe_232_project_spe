@@ -148,7 +148,7 @@ GO
 
 -- ==========================================
 -- TABLO: CandidateSkills
--- Yapı: AGGREGATION (CandidateUser ile Skill arasındaki M:N ilişkiyi çözer)
+-- Yapı: M:N ASSOCIATION (CandidateUser ile Skill arasındaki M:N ilişkiyi çözer)
 -- İlişkiler: CandidateUser (N:1), Skill (N:1)
 -- Açıklama: Adayların sahip olduğu yetenekleri ve seviyelerini kaydeden ara tablodur.
 -- ==========================================
@@ -184,7 +184,7 @@ GO
 
 -- ==========================================
 -- TABLO: CandidateForeignLanguages
--- Yapı: AGGREGATION (CandidateUser ile ForeignLanguage arasındaki M:N ilişkiyi çözer)
+-- Yapı: M:N ASSOCIATION (CandidateUser ile ForeignLanguage arasındaki M:N ilişkiyi çözer)
 -- İlişkiler: CandidateUser (N:1), ForeignLanguage (N:1)
 -- Açıklama: Adayların bildiği yabancı dilleri ve seviyelerini kaydeden ara tablodur.
 -- ==========================================
@@ -227,7 +227,7 @@ GO
 
 -- ==========================================
 -- TABLO: Interviews
--- Yapı: AGGREGATION (JobApplication ile InterviewerUser arasındaki M:N ilişkiyi çözer)
+-- Yapı: AGGREGATION bağlantısı (JobApplication aggregation'ı ile InterviewerUser arasındaki ilişki)
 -- İlişkiler: JobApplication (N:1), InterviewerUser (N:1)
 -- Açıklama: Bir başvuru sürecine atanan mülakatçının gerçekleştirdiği değerlendirmedir.
 --           State Machine mantığıyla (Scheduled -> Completed / Cancelled) ilerler.

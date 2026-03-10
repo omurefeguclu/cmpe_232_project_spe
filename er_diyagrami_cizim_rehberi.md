@@ -134,20 +134,20 @@ Company ====(1)==== [[Posts]] ====(N)==== JobPosting
 - Company tarafı: **1**
 - JobPosting tarafı: **N**
 
-### 5.4 — CandidateUser ↔ Skill (M:N → Aggregation)
+### 5.4 — CandidateUser ↔ Skill (M:N Association)
 ```
 CandidateUser ----(M)---- [HasSkill] ----(N)---- Skill
 ```
 - Baklava: **HasSkill**
-- Bu bir **aggregation** olduğu için baklavanın etrafına **büyük bir dikdörtgen** daha çizin (baklava + çizgileri kapsayan)
+- Bu basit bir **M:N ilişkidir** (association), normal baklava çizin
 - Baklava'ya `ProficiencyLevel` attribute elipsi bağlayın (ilişkinin kendi attribute'u)
 
-### 5.5 — CandidateUser ↔ ForeignLanguage (M:N → Aggregation)
+### 5.5 — CandidateUser ↔ ForeignLanguage (M:N Association)
 ```
 CandidateUser ----(M)---- [Speaks] ----(N)---- ForeignLanguage
 ```
 - Baklava: **Speaks**
-- Bu da bir **aggregation** → baklavanın etrafına büyük dikdörtgen çizin
+- Bu da basit bir **M:N ilişkidir** (association), normal baklava çizin
 - Baklava'ya `ProficiencyLevel` attribute elipsi bağlayın
 
 ### 5.6 — CandidateUser ↔ JobPosting (M:N → Aggregation)
@@ -155,22 +155,22 @@ CandidateUser ----(M)---- [Speaks] ----(N)---- ForeignLanguage
 CandidateUser ----(M)---- [AppliesTo] ----(N)---- JobPosting
 ```
 - Baklava: **AppliesTo**
-- Bu da bir **aggregation** → baklavanın etrafına büyük dikdörtgen çizin
+- Bu bir **aggregation**'dır çünkü bu ilişki daha sonra **Interviews** ilişkisine bir entity gibi katılır
+- Baklavanın ve ona bağlı çizgilerin **tamamını kapsayan** büyük bir dikdörtgen çizin
 - Bu aggregation'ın kendi attribute'ları:
   - `ApplicationStatus`
   - `CreatedAt`
   - `UpdatedAt`
 
-### 5.7 — JobApplication ↔ InterviewerUser (M:N → Aggregation)
-Bu ilişki, bir başvuru sürecine mülakatçı atanmasını temsil eder:
+### 5.7 — JobApplication (Aggregation) ↔ InterviewerUser
+Bu ilişki, önceki adımda çizdiğiniz **AppliesTo aggregation dikdörtgeninden** çıkar:
 
 ```
-JobApplication (AppliesTo aggr.) ----(M)---- [Evaluates] ----(N)---- InterviewerUser
+[AppliesTo Aggregation Kutusu] ----(M)---- [Evaluates] ----(N)---- InterviewerUser
 ```
 - Baklava: **Evaluates**
-- Bu bir **aggregation** → baklavanın etrafına büyük dik dörtgen çizin
-- JobApplication tarafı: **M**
-- InterviewerUser tarafı: **N**
+- Aggregation kutusundan (5.6'daki büyük dikdörtgenden) Evaluates baklava'ya çizgi çekin
+- Evaluates baklava'dan InterviewerUser dikdörtgenine çizgi çekin
 - Baklava'ya şu attribute elipslerini bağlayın:
   - `ScheduledDate`
   - `Status`
@@ -178,6 +178,8 @@ JobApplication (AppliesTo aggr.) ----(M)---- [Evaluates] ----(N)---- Interviewer
   - `Notes`
   - `CreatedAt`
   - `UpdatedAt`
+
+> **Aggregation neden önemli?** AppliesTo ilişkisini kutuluyoruz çünkü Evaluates ilişkisi ona bir "entity" gibi bağlanıyor. Eğer kutulamasaydık, Evaluates'in hangi başvuruya ait olduğunu gösteremezdik.
 
 ---
 
@@ -232,17 +234,15 @@ Diyagramın okunabilir olması için şu düzen önerilir:
                     [ISA]
                    /  |  \
      [CandidateUser] [CompanyOwnerUser] [InterviewerUser]
-           |                |                    |
-     [HasSkill]          [Owns]            [Evaluates]
-     [Speaks]              |                    |
-     [AppliesTo]       [Company]          (Ternary'ye)
-           \             /    \
-            \           /      \
-         [JobPosting] [JobSector]
-              |
-         [AppliesTo] ← aggregation
-              |
-         [Evaluates] ← ternary relationship
+        |  |  |            |                    |
+  [HasSkill] |        [Owns]              [Evaluates]
+    [Speaks] |             |                    |
+             |         [Company]        (Aggregation'dan)
+             |           /    \
+             |          /      \
+          [AppliesTo] ← AGGREGATION    [JobSector]
+               |
+          [JobPosting]
 ```
 
 > **İpucu:** Entity'leri önce kabaca yukarıdaki düzene göre yerleştirin, sonra ilişkileri çizin. En son attribute'ları ekleyin. Böylece daha düzenli olur.
@@ -262,7 +262,7 @@ Diyagramın okunabilir olması için şu düzen önerilir:
 | `JobPosting` | Çift kenarlı dikdörtgen | Weak Entity |
 | `Skill` | Dikdörtgen | Entity |
 | `ForeignLanguage` | Dikdörtgen | Entity |
-| `CandidateSkills` | Baklava + kapsayan dikdörtgen | Aggregation |
-| `CandidateForeignLanguages` | Baklava + kapsayan dikdörtgen | Aggregation |
+| `CandidateSkills` | Baklava (normal) | M:N Association |
+| `CandidateForeignLanguages` | Baklava (normal) | M:N Association |
 | `JobApplication` | Baklava + kapsayan dikdörtgen | Aggregation |
-| `Interviews` | Baklava + kapsayan dik dörtgen | Aggregation |
+| `Interviews` | Baklava (aggregation kutusuna bağlı) | Aggregation Bağlantısı |
