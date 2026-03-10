@@ -1,0 +1,30 @@
+Abstract
+
+The abstract summarizes the overall project in 3-5 sentences. Make sure that this part will answer the following questions: 
+•	What is the goal of the project?
+•	What will the system be designed for?
+•	Why is this project interesting / important?
+•	Who will use the application and the database for what purpose?
+
+I.	Introduction
+
+This section introduces the project; how do you find the idea/problem, what kind of functionalities will be supported. Provide some background about such systems if other similar systems exist and give the differences that you will implement. Please give references (links, books, etc.) and explain how you have used an AI tool to understand the concept. Be specific and provide concrete information about the expectations from the project.
+
+II.	Requirements
+
+Write the requirements related to the subject that you select. Give all the details about the subject. Don't write too simple or too complex requirements. Look at the course slides for sample requirements.
+
+•	Requirements must indicate at least 6 entities. (Your project must consist of at least 6 entities, 4 relationships and 2 complex structures. Each entity  must have at least one relationship, attribute of ids should be given by auto-increment values and auto-set date information for the modification time. Note that weak entity, aggregation, and concept hierarchy are considered complex structures. If you have a ternary relationship it will be considered as a complex structure.)
+•	Add specific constraints and requirements considering a real-life scenario (limitation, performance-related expectations, etc.)
+
+III.	Functionality
+
+List the functions of your project in this section. These functions will be implemented in the application and in the database.
+
+IV.	Workload Division
+
+Explain how you will organize the division of workload within the group. Explain this in detail in this section by providing task name and responsible students as a table.
+
+V.	References
+
+URL, or research papers
