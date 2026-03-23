@@ -220,7 +220,8 @@ CREATE TABLE JobApplication (
     
     CONSTRAINT PK_JobApplication PRIMARY KEY (Id),
     CONSTRAINT FK_JobApplication_Candidate FOREIGN KEY (CandidateId) REFERENCES CandidateUser(UserId) ON DELETE CASCADE,
-    CONSTRAINT FK_JobApplication_JobPosting FOREIGN KEY (JobPostingId) REFERENCES JobPosting(Id) ON DELETE CASCADE,
+    -- ON DELETE NO ACTION: User-> CompanyOwnerUser üzerinden bir cycle oluşturduğu için workaround yapılması gerekti. Trigger ekleyerek çözdük.
+    CONSTRAINT FK_JobApplication_JobPosting FOREIGN KEY (JobPostingId) REFERENCES JobPosting(Id) ON DELETE NO ACTION,
     CONSTRAINT UQ_Candidate_Job UNIQUE (CandidateId, JobPostingId)
 );
 GO
@@ -313,6 +314,15 @@ CREATE TRIGGER trg_Company_UpdateModificationTime
 ON Company AFTER UPDATE AS
 BEGIN
     UPDATE Company SET UpdatedAt = GETDATE() FROM Inserted i WHERE Company.Id = i.Id;
+END;
+GO
+
+-- JobPosting silindiğinde bağlı JobApplication kayıtlarını siler
+-- (MSSQL'de çoklu cascade path yasağını aşmak için FK CASCADE yerine trigger kullanılır)
+CREATE TRIGGER trg_JobPosting_CascadeDeleteApplications
+ON JobPosting AFTER DELETE AS
+BEGIN
+    DELETE FROM JobApplication WHERE JobPostingId IN (SELECT Id FROM Deleted);
 END;
 GO
 
