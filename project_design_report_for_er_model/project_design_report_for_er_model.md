@@ -11,11 +11,11 @@ This report documents the Entity-Relationship (ER) model design for the **Interv
 
 The database is designed with the following guiding principles:
 
-- **Role-based user hierarchy** using a Concept Hierarchy (ISA / TPT mapping) so that shared user fields are not duplicated across role-specific tables.
+- **Role-based user hierarchy** using a Concept Hierarchy with Specialization (ISA) so that shared user fields are not duplicated across role-specific tables.
 - **Existential dependency** expressed through a Weak Entity for job postings, which cannot exist without their owning company.
 - **Aggregation** to treat the Candidate↔JobPosting M:N relationship (`JobApplication`) as a first-class entity so that interviews can be linked to a specific application rather than loosely to a candidate or posting.
 - **M:N Associations** with descriptive attributes for candidate skills and foreign language proficiencies.
-- **Derived attributes** (`ApplicationCount` on `JobPosting`, `AverageScore` on `JobApplication`) to express values that are logically computable from other data in the schema, making common read queries simpler without changing the underlying source of truth.
+- **Derived attributes** (`ApplicationCount` on `JobPosting`, `AverageScore` on `JobApplication`) to express values that are logically computable from other data already present in the schema.
 - **Referential integrity and uniqueness constraints** to enforce real-world business rules (one application per candidate per posting, one skill/language entry per candidate, etc.).
 
 The schema consists of **9 entities**, **7 relationships**, and **4 complex structures**, satisfying and exceeding the minimum requirements (≥6 relations, ≥4 relationships, ≥2 complex structures).
@@ -30,8 +30,8 @@ The RecruitmentDB schema models a recruitment marketplace with three types of ac
 
 1. All platform participants register as a `User`. Each user then specializes into one of three sub-types through an ISA relationship: `CandidateUser`, `CompanyOwnerUser`, or `InterviewerUser`.
 2. A `CompanyOwnerUser` creates one or more `Company` entities. Each `Company` is associated with a `JobSector` and can publish multiple `JobPosting` records (which are weak entities, dependent on the company for existence).
-3. A `CandidateUser` enriches their profile by associating themselves with `Skill` entities (via the `HasSkill` M:N relationship, implemented as `CandidateSkills`) and `ForeignLanguage` entities (via the `Speaks` M:N relationship, implemented as `CandidateForeignLanguages`). Each association carries a `ProficiencyLevel` attribute.
-4. A `CandidateUser` applies to a `JobPosting` through the `AppliesTo` relationship. Because this application object is itself a meaningful entity in the workflow (it has a lifecycle status and becomes the anchor for future interviews), it is **aggregated** into `JobApplication`.
+3. A `CandidateUser` extends their profile by participating in `HasSkill` (M:N with `Skill`, resolved as `CandidateSkills`) and `Speaks` (M:N with `ForeignLanguage`, resolved as `CandidateForeignLanguages`) relationships. Each carries a `ProficiencyLevel` attribute.
+4. A `CandidateUser` applies to a `JobPosting` through the `AppliesTo` relationship. Because this relationship instance is itself a meaningful entity with its own lifecycle status and serves as the basis for subsequent interview assignments, it is modeled as an **Aggregation** (`JobApplication`).
 5. An `InterviewerUser` is then assigned to evaluate a specific `JobApplication` via the `Evaluates` relationship, producing an `Interviews` record that tracks the scheduled date, status, score, and notes.
 
 This design ensures that every interview can be traced back to a specific candidate–posting pair, and that all historical data survives independently across the system.
@@ -55,7 +55,7 @@ This design ensures that every interview can be traced back to a specific candid
 | 9 | `ForeignLanguage` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined foreign language (e.g., English, German, French). Attributes: `LanguageName` (UNIQUE), `CreatedAt`. |
 
 **Why this structure?**  
-The ISA / TPT approach avoids storing NULL-heavy rows in a single wide user table. Each sub-type table only carries fields relevant to that role. `JobPosting` is a Weak Entity because a posting has no meaning outside the context of its publishing company — if the company is deleted, the posting must also be deleted. `JobSector`, `Skill`, and `ForeignLanguage` are independent reference entities that provide controlled vocabularies to the system.
+The Specialization (ISA) approach ensures that each sub-type table contains only role-specific attributes, avoiding attribute redundancy. `JobPosting` is modeled as a Weak Entity because it is existentially dependent on `Company` — it has no independent existence. `JobSector`, `Skill`, and `ForeignLanguage` are Strong Entities that serve as shared reference sets for the rest of the schema.
 
 ---
 
@@ -72,7 +72,7 @@ The ISA / TPT approach avoids storing NULL-heavy rows in a single wide user tabl
 | 7 | **AppliesTo / Evaluates** | `CandidateUser` ↔ `JobPosting` → `InterviewerUser` | `JobApplication` (Aggregation) + `Interviews` | Two-part relationship. `AppliesTo` (M:N) captures the application of a candidate to a posting, producing a `JobApplication` record with `ApplicationStatus`. This record is then **aggregated** and connected to `InterviewerUser` via the `Evaluates` relationship, producing an `Interviews` record with `ScheduledDate`, `Status`, `Score`, and `Notes`. |
 
 **Why this structure?**  
-The `HasSkill` and `Speaks` relationships are implemented as association tables rather than being collapsed into the candidate entity, because both are genuine M:N relationships with their own descriptive attribute (`ProficiencyLevel`). The `AppliesTo` / `Evaluates` split uses **Aggregation** because an interview is not simply a ternary relationship between a candidate, a posting, and an interviewer — it is specifically attached to a *particular application object*, which has its own lifecycle. Aggregating `JobApplication` makes this connection explicit and traceable.
+The `HasSkill` and `Speaks` relationships are resolved into separate association tables because both are genuine M:N relationships that carry their own descriptive attribute (`ProficiencyLevel`). The `AppliesTo` / `Evaluates` split employs **Aggregation** because an interview is not a simple ternary relationship among a candidate, a posting, and an interviewer — it is associated with a specific application instance that has its own lifecycle. Modeling `JobApplication` as an aggregation makes this dependency explicit.
 
 ---
 
@@ -125,10 +125,10 @@ The `HasSkill` and `Speaks` relationships are implemented as association tables 
 
 Derived attributes are values that can be **computed from other data already present in the database**. In the ER diagram they are drawn as **dashed-border ellipses** attached to their entity. They are not stored as physical columns in the schema.
 
-| Derived Attribute | Entity | Derivation Formula | Storage Strategy |
-|---|---|---|---|
-| `ApplicationCount` | `JobPosting` | `COUNT(*) FROM JobApplication WHERE JobPostingId = JobPosting.Id` | **Not stored** — computed on query (commented out in schema) |
-| `AverageScore` | `JobApplication` | `AVG(Score) FROM Interviews WHERE ApplicationId = JobApplication.Id AND Score IS NOT NULL` | **Not stored** — computed on query (commented out in schema) |
+| Derived Attribute | Entity | Derivation Formula |
+|---|---|---|
+| `ApplicationCount` | `JobPosting` | `COUNT(*) FROM JobApplication WHERE JobPostingId = JobPosting.Id` |
+| `AverageScore` | `JobApplication` | `AVG(Score) FROM Interviews WHERE ApplicationId = JobApplication.Id` |
 
 ---
 
