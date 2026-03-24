@@ -44,12 +44,12 @@ This design ensures that every interview can be traced back to a specific candid
 
 | # | Entity | Type | Primary Key | Description |
 |---|---|---|---|---|
-| 1 | `User` | Super-type (Concept Hierarchy) | `Id` (INT, IDENTITY) | Stores common authentication data for all users: `Email` (UNIQUE), `PasswordHash`, `CreatedAt`, `UpdatedAt`. The root of the TPT hierarchy. |
+| 1 | `User` | Super-type (Concept Hierarchy) | `Id` (INT, IDENTITY) | Stores common authentication data for all users: `Email` (UNIQUE), `PasswordHash`, `CreatedAt`, `UpdatedAt`. The root of the ISA hierarchy. |
 | 2 | `CandidateUser` | Sub-type (ISA) | `UserId` (FK → User.Id) | Extends `User` for job-seeking candidates. Additional attributes: `ResumeUrl`, `GitHubProfile`. UserId is both the PK and FK, inheriting identity from `User`. |
 | 3 | `CompanyOwnerUser` | Sub-type (ISA) | `UserId` (FK → User.Id) | Extends `User` for company representatives. Additional attribute: `VerificationTaxNumber` (used for identity verification). |
 | 4 | `InterviewerUser` | Sub-type (ISA) | `UserId` (FK → User.Id) | Extends `User` for independent interviewers. Additional attributes: `Department`, `Title` (define the interviewer's area of expertise). |
 | 5 | `JobSector` | Strong Entity | `Id` (INT, IDENTITY) | Categorizes companies by industry (e.g., Technology, Finance, Healthcare). Attributes: `SectorName` (UNIQUE), `CreatedAt`. |
-| 6 | `Company` | Entity | `Id` (INT, IDENTITY) | Represents registered companies on the platform. Attributes: `CompanyName`, `CreatedAt`, `UpdatedAt`. Foreign keys: `CompanyOwnerId` → `CompanyOwnerUser`, `JobSectorId` → `JobSector`. |
+| 6 | `Company` | Strong Entity | `Id` (INT, IDENTITY) | Represents registered companies on the platform. Attributes: `CompanyName`, `CreatedAt`, `UpdatedAt`. Foreign keys: `CompanyOwnerId` → `CompanyOwnerUser`, `JobSectorId` → `JobSector`. |
 | 7 | `JobPosting` | **Weak Entity** | `Id` (partial key) + `CompanyId` (identifying FK) | Job listings published by companies. Attributes: `Title`, `Description`, `CreatedAt`, `UpdatedAt`. Derived attribute: `ApplicationCount` (total number of applications received). Cannot exist without an owning `Company`. |
 | 8 | `Skill` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined technical or professional skill (e.g., Java, SQL, React). Attributes: `SkillName` (UNIQUE), `CreatedAt`. |
 | 9 | `ForeignLanguage` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined foreign language (e.g., English, German, French). Attributes: `LanguageName` (UNIQUE), `CreatedAt`. |
@@ -63,7 +63,7 @@ The Specialization (ISA) approach ensures that each sub-type table contains only
 
 | # | Relationship Name | Entities Involved | Implementation | Description |
 |---|---|---|---|---|
-| 1 | **ISA** | `User` → `CandidateUser`, `CompanyOwnerUser`, `InterviewerUser` | Concept Hierarchy (TPT) | Each `User` can specialize into exactly one sub-type. The sub-type table holds the role-specific attributes and shares its `UserId` PK with the parent. |
+| 1 | **ISA** | `User` → `CandidateUser`, `CompanyOwnerUser`, `InterviewerUser` | Specialization (ISA) | Each `User` can specialize into exactly one sub-type. The sub-type table holds the role-specific attributes and shares its `UserId` PK with the parent. |
 | 2 | **Owns** | `CompanyOwnerUser` → `Company` | FK `Company.CompanyOwnerId` | A company owner can own one or more companies (1:N). A company must have exactly one owner. |
 | 3 | **BelongsTo** | `JobSector` → `Company` | FK `Company.JobSectorId` | A company is categorized under exactly one job sector (N:1 from Company's perspective). A sector can have many companies. |
 | 4 | **Posts** | `Company` → `JobPosting` | FK `JobPosting.CompanyId` (Identifying Relationship) | A company can publish many job postings. This is the **identifying relationship** for the `JobPosting` weak entity — a posting's existence depends on its parent company. |

@@ -89,7 +89,7 @@ Her biri için bir **dikdörtgen** çizip attribute elipslerini bağlayın:
 
 ## ADIM 4: Company ve JobPosting Entity'lerini Çizin
 
-### 4.1 — Company (Normal Entity)
+### 4.1 — Company (Normal / Strong Entity)
 Bir **dikdörtgen** içine **Company** yazın. Attribute'ları:
 - `Id` (PK — altı çizili)
 - `CompanyName`
@@ -103,6 +103,7 @@ Bir **dikdörtgen** içine **Company** yazın. Attribute'ları:
 - `Description`
 - `CreatedAt`
 - `UpdatedAt`
+- `ApplicationCount` (**kesikli kenarlı elips** — derived attribute; COUNT(*) FROM JobApplication WHERE JobPostingId = Id)
 
 ---
 
@@ -161,6 +162,7 @@ CandidateUser ----(M)---- [AppliesTo] ----(N)---- JobPosting
   - `ApplicationStatus`
   - `CreatedAt`
   - `UpdatedAt`
+  - `AverageScore` (**kesikli kenarlı elips** — derived attribute; AVG(Score) FROM Interviews WHERE ApplicationId = Id)
 
 ### 5.7 — JobApplication (Aggregation) ↔ InterviewerUser
 Bu ilişki, önceki adımda çizdiğiniz **AppliesTo aggregation dikdörtgeninden** çıkar:
@@ -257,11 +259,11 @@ Diyagramın okunabilir olması için şu düzen önerilir:
 | `CandidateUser` | Dikdörtgen (ISA altında) | Concept Hierarchy (Sub-type) |
 | `CompanyOwnerUser` | Dikdörtgen (ISA altında) | Concept Hierarchy (Sub-type) |
 | `InterviewerUser` | Dikdörtgen (ISA altında) | Concept Hierarchy (Sub-type) |
-| `JobSector` | Dikdörtgen | Entity |
-| `Company` | Dikdörtgen | Entity |
+| `JobSector` | Dikdörtgen | Strong Entity |
+| `Company` | Dikdörtgen | Strong Entity |
 | `JobPosting` | Çift kenarlı dikdörtgen | Weak Entity |
-| `Skill` | Dikdörtgen | Entity |
-| `ForeignLanguage` | Dikdörtgen | Entity |
+| `Skill` | Dikdörtgen | Strong Entity |
+| `ForeignLanguage` | Dikdörtgen | Strong Entity |
 | `CandidateSkills` | Baklava (normal) | M:N Association |
 | `CandidateForeignLanguages` | Baklava (normal) | M:N Association |
 | `JobApplication` | Baklava + kapsayan dikdörtgen | Aggregation |
