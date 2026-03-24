@@ -1,0 +1,38 @@
+I.	Introduction
+
+You should define entities, attributes, and relations between entities rationally and show all clearly. Please use appropriate names in your model to make it easy to read. 
+
+Requirements:
+●	Your project must consist of at least 6 relations, 4 relationships, 2 complex structures and related attributes from various domains including date. 
+●	Be specific about the user requirements and constraints. 
+●	Determine Weak Entities, Identifying relationships, Derived attributes, etc.
+●	Determine Primary Key, Partial Key, and Foreign Key constraints in your database.
+
+
+II.	Entity- Relationship Model 
+
+a.	Definition
+
+In this section, describe the general structure of your database in verbal form based on your initial proposal (User Requirement Analysis).
+
+b.	Components
+
+In this section, identify the entities, relationships, and attributes in your project clearly. Make a list for each. Explain why you design your entity types and the relationships among them as reported here. Be specific and straightforward. Do not just write the names of the relations. Explain your reasoning in detail.
+
+c.	Cardinality and Modality
+
+Cardinality and modality in ER diagrams define the numerical relationships and mandatory nature of relationships between entities. Define these constructs for your system, which provide important information about how entity instances are related to each other and how they can interact within the system.
+
+III.	Final ER Schema
+
+Add the resulting ER diagram based on the above User Requirements here as a screenshot. The ER schema must be in line with the above analysis. Draw your ER diagram by using a tool developed for this purpose. E.g. ERDPlus or search Google for "free ER drawing tools". 
+
+Extra free sites to draw ER Diagram:
+●	https://www.drawio.com/
+●	https://www.quickdatabasediagrams.com/
+●	https://dbdiagram.io/
+●	https://www.lucidchart.com/
+
+IV.	References
+
+URL, or research papers used.

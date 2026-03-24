@@ -123,6 +123,9 @@ CREATE TABLE JobPosting (
     CompanyId INT NOT NULL,
     Title VARCHAR(200) NOT NULL,
     Description NVARCHAR(MAX) NOT NULL,
+    -- DERIVED ATTRIBUTE: Calculated as COUNT(*) FROM JobApplication WHERE JobPostingId = Id
+    -- (Not stored as a physical column; computed on query)
+    -- ApplicationCount INT DEFAULT 0 NOT NULL,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     
@@ -215,6 +218,9 @@ CREATE TABLE JobApplication (
     CandidateId INT NOT NULL,
     JobPostingId INT NOT NULL,
     ApplicationStatus VARCHAR(50) DEFAULT 'Pending' NOT NULL,
+    -- DERIVED ATTRIBUTE: Calculated as AVG(Score) FROM Interviews WHERE ApplicationId = Id
+    -- (Not stored as a physical column; computed on query)
+    -- AverageScore FLOAT NULL,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     
