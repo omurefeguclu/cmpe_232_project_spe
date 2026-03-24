@@ -1,0 +1,56 @@
+CMPE 232 Database Systems
+Spring 2026
+Term Project Specifications
+You are asked to build a database system regarding your research interest, department, personal
+interests, etc.. Your project must consist of at least 6 entities, 4 relationships and 2 complex
+structures. Each entity must have at least one relationship connected. Attribute of idsshould be given
+by auto-increment values and auto-set date information for the modification time. Note that weak
+entity, aggregation, and concept hierarchy are considered complex structures. If you have a ternary
+relationship it will also be considered as a complex structure. Primary Key and Foreign Key constraints
+should be implemented into your database.
+You must use MSSQL 2022 Developer Edition when you build up your database. It is an obligation
+that you mustintegrate Entity Framework ORM and LINQ with your application to communicate with
+DBMS. The .edmx file (Entity Data Model file) is a required part of your project and must not be
+deleted, as it defines the mapping between your database and application entities. Otherwise, you
+will not get any grades from the application parts. It is forbidden to use any other database
+programs.(You must use Entity Framework (EF) and LINQ to access the database; therefore, please
+ensure that your project includes an EDMX model file.)
+Project work and tools to use are as follows:
+1. Team Building: Form a group of minimum 2 students and give a name to your group. You will be filling
+out your information on the group sheet on LMS as announced. We will assign members to groups which
+cannot find a member. Group members are expected to have a comprehensive understanding of the
+entire project and all entities. Collaboration and overall project awareness are essential for successful
+integration.
+2. Project Proposal: For your Project Proposal, find an interesting subject. Please be creative, do not pick
+a classic subject such as library automation system, e-shopping or university database. Write the
+requirements specification for the subject that you select. Give all the details about the subject. Don't
+write too simple or too complex requirements. Look at the course slides for sample requirements. After
+submitting your proposal, your project topic will be reviewed and either approved or rejected. You will
+receive feedback accordingly, and in case of rejection, you will be expected to revise your topic and
+resubmit.
+3. Project Design Reports: Prepare your Project Design Reports in Entity Relationship Diagrams and Class
+Diagrams. You should also create the relational model from the ER diagram. Define entities, attributes
+and relations between entities in a rational manner and show them all clearly. Please use appropriate
+names in your model to make it readable. You will upload your reports to LMS by the due date which
+will be announced later. Also, Project Design Reports should have your project name, goals and mockups (Template of your application interfaces) of your project. You can develop either a desktop
+application or a web application. At the end of each Design Report submission — both the ER Model
+Report and the Relational Model & Database Structure Report — groups will present their work in the
+class. During your presentation, you should be able to show your relations and use DML commands to
+show your data. These presentations will provide an opportunity to explain your design decisions,
+demonstrate your progress, and receive feedback before moving on to the next phase of the project.
+Computer Engineering Department
+4. Database Application: According to your project scenario, you will use “Create, Update, Select, Insert,
+Delete, Aggregation (Group By, Exists …)” operations in your application. Also, all other commands must
+be implemented inside your application class methods. By the end of the semester, before the
+presentations you must finish and upload all your project files to the LMS website.
+NOTE: You must use Entity Framework (EF) and LINQ to access the database; therefore, please ensure
+that your project includes an EDMX model file. The home page should feature statistics charts that are
+relevant to your database. Each entity should have its dedicated pages for listing, editing, updating,
+deleting, and creating operations. For the create and edit pages, replace the default text boxes used to
+enter the ID of related objects with dropdown lists. This will allow users to select the related entity from
+a list (e.g., choose the employee's department from the existing departments in the database). Your
+application must be capable of deleting an entity that is associated with others (e.g., you should be able
+to delete a department that has employees assigned to it).
+5. Presentation/Demo: You will demonstrate your work on the days which will be announced. During the
+presentation, there will be questions asked about the project and its implementation. Your code and
+these operations should work during the presentation.
