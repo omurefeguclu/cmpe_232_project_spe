@@ -42,17 +42,19 @@ This design ensures that every interview can be traced back to a specific candid
 
 #### Entities
 
+> **Note on ER to Relational Mapping:** In strict conceptual ER models, foreign keys are not explicitly shown as attributes since relationships (diamonds) handle connections. However, for clarity and to seamlessly bridge our conceptual diagram with the final `database.sql` physical schema, foreign key implementations are optionally documented in this summary table.
+
 | # | Entity | Type | Primary Key | Description |
 |---|---|---|---|---|
 | 1 | `User` | Super-type (Concept Hierarchy) | `Id` (INT, IDENTITY) | Stores common authentication data for all users: `Email` (UNIQUE), `PasswordHash`, `CreatedAt`, `UpdatedAt`. The root of the ISA hierarchy. |
 | 2 | `CandidateUser` | Sub-type (ISA) | `UserId` (FK → User.Id) | Extends `User` for job-seeking candidates. Additional attributes: `ResumeUrl`, `GitHubProfile`. UserId is both the PK and FK, inheriting identity from `User`. |
 | 3 | `CompanyOwnerUser` | Sub-type (ISA) | `UserId` (FK → User.Id) | Extends `User` for company representatives. Additional attribute: `VerificationTaxNumber` (used for identity verification). |
 | 4 | `InterviewerUser` | Sub-type (ISA) | `UserId` (FK → User.Id) | Extends `User` for independent interviewers. Additional attributes: `Department`, `Title` (define the interviewer's area of expertise). |
-| 5 | `JobSector` | Strong Entity | `Id` (INT, IDENTITY) | Categorizes companies by industry (e.g., Technology, Finance, Healthcare). Attributes: `SectorName` (UNIQUE), `CreatedAt`. |
+| 5 | `JobSector` | Strong Entity | `Id` (INT, IDENTITY) | Categorizes companies by industry (e.g., Technology, Finance, Healthcare). Attributes: `SectorName` (UNIQUE), `CreatedAt`, `UpdatedAt`. |
 | 6 | `Company` | Strong Entity | `Id` (INT, IDENTITY) | Represents registered companies on the platform. Attributes: `CompanyName`, `CreatedAt`, `UpdatedAt`. Foreign keys: `CompanyOwnerId` → `CompanyOwnerUser`, `JobSectorId` → `JobSector`. |
 | 7 | `JobPosting` | **Weak Entity** | `Id` (partial key) + `CompanyId` (identifying FK) | Job listings published by companies. Attributes: `Title`, `Description`, `CreatedAt`, `UpdatedAt`. Derived attribute: `ApplicationCount` (total number of applications received). Cannot exist without an owning `Company`. |
-| 8 | `Skill` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined technical or professional skill (e.g., Java, SQL, React). Attributes: `SkillName` (UNIQUE), `CreatedAt`. |
-| 9 | `ForeignLanguage` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined foreign language (e.g., English, German, French). Attributes: `LanguageName` (UNIQUE), `CreatedAt`. |
+| 8 | `Skill` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined technical or professional skill (e.g., Java, SQL, React). Attributes: `SkillName` (UNIQUE), `CreatedAt`, `UpdatedAt`. |
+| 9 | `ForeignLanguage` | Strong Entity | `Id` (INT, IDENTITY) | Represents a defined foreign language (e.g., English, German, French). Attributes: `LanguageName` (UNIQUE), `CreatedAt`, `UpdatedAt`. |
 
 **Why this structure?**  
 The Specialization (ISA) approach ensures that each sub-type table contains only role-specific attributes, avoiding attribute redundancy. `JobPosting` is modeled as a Weak Entity because it is existentially dependent on `Company` — it has no independent existence. `JobSector`, `Skill`, and `ForeignLanguage` are Strong Entities that serve as shared reference sets for the rest of the schema.
@@ -72,11 +74,13 @@ The Specialization (ISA) approach ensures that each sub-type table contains only
 | 7 | **AppliesTo / Evaluates** | `CandidateUser` ↔ `JobPosting` → `InterviewerUser` | `JobApplication` (Aggregation) + `Interviews` | Two-part relationship. `AppliesTo` (M:N) captures the application of a candidate to a posting, producing a `JobApplication` record with `ApplicationStatus`. This record is then **aggregated** and connected to `InterviewerUser` via the `Evaluates` relationship, producing an `Interviews` record with `ScheduledDate`, `Status`, `Score`, and `Notes`. |
 
 **Why this structure?**  
-The `HasSkill` and `Speaks` relationships are resolved into separate association tables because both are genuine M:N relationships that carry their own descriptive attribute (`ProficiencyLevel`). The `AppliesTo` / `Evaluates` split employs **Aggregation** because an interview is not a simple ternary relationship among a candidate, a posting, and an interviewer — it is associated with a specific application instance that has its own lifecycle. Modeling `JobApplication` as an aggregation makes this dependency explicit.
+The `HasSkill` and `Speaks` relationships are conceptual M:N associations in the ER diagram (represented as diamonds with attributes). In the final SQL schema, these are naturally resolved into separate association tables (`CandidateSkills`, `CandidateForeignLanguages`) because both carry their own descriptive relational attribute (`ProficiencyLevel`). The `AppliesTo` / `Evaluates` split employs **Aggregation** because an interview is not a simple ternary relationship among a candidate, a posting, and an interviewer — it is associated with a specific application instance that has its own lifecycle. Modeling `JobApplication` as an aggregation makes this dependency explicit.
 
 ---
 
 #### Attributes Summary
+
+> **Note on Audit Attributes:** To maintain readability and focus on the core business logic and relationships, standard audit attributes (`CreatedAt`, `UpdatedAt`) that are present in almost all entities are omitted from this summary table (except for the root `User` entity to establish the baseline pattern). These timestamps are implemented universally across the database via schema defaults and automatic triggers.
 
 | Entity / Relationship | Attribute | Key Type | Notes |
 |---|---|---|---|
@@ -155,7 +159,7 @@ The table below defines the cardinality (how many instances can participate) and
 - `M:N` — Many-to-many; requires an association table. Used for HasSkill, Speaks, AppliesTo, and Evaluates.
 
 **Modality (participation constraint) notes:**
-- **Mandatory (total participation):** Every `Company` must have an owner (`CompanyOwnerId NOT NULL`) and a sector (`JobSectorId NOT NULL`). Every `JobPosting` must belong to a `Company` (`CompanyId NOT NULL`, CASCADE DELETE). Every `CandidateSkills` record must reference a valid candidate and skill (`NOT NULL` FKs). Every `Interviews` record must be tied to a `JobApplication` (`NOT NULL`).
+- **Mandatory (total participation):** Every `Company` must have an owner (`CompanyOwnerId NOT NULL`) and a sector (`JobSectorId NOT NULL`). Every `JobPosting` must belong to a `Company` (`CompanyId NOT NULL`). *(Note on implementation: Deleting a `JobPosting` deletes its applications via a custom SQL Trigger rather than standard `ON DELETE CASCADE` to strictly bypass MSSQL's "multiple cascade paths" limitation)*. Every `CandidateSkills` record must reference a valid candidate and skill (`NOT NULL` FKs). Every `Interviews` record must be tied to a `JobApplication` (`NOT NULL`).
 - **Optional (partial participation):** A `CompanyOwnerUser` need not have created any companies yet. A `Skill` or `ForeignLanguage` may exist in the system without any candidate having listed it. A `CandidateUser` may not have submitted any applications. An `InterviewerUser` may not yet have been assigned an interview.
 
 ---

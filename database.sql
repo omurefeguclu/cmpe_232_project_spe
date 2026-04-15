@@ -87,6 +87,7 @@ CREATE TABLE JobSector (
     Id INT IDENTITY(1,1) NOT NULL,
     SectorName VARCHAR(150) NOT NULL UNIQUE,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+    UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     
     CONSTRAINT PK_JobSector PRIMARY KEY (Id)
 );
@@ -144,6 +145,7 @@ CREATE TABLE Skill (
     Id INT IDENTITY(1,1) NOT NULL,
     SkillName VARCHAR(150) NOT NULL UNIQUE,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+    UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     
     CONSTRAINT PK_Skill PRIMARY KEY (Id)
 );
@@ -180,6 +182,7 @@ CREATE TABLE ForeignLanguage (
     Id INT IDENTITY(1,1) NOT NULL,
     LanguageName VARCHAR(100) NOT NULL UNIQUE,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+    UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     
     CONSTRAINT PK_ForeignLanguage PRIMARY KEY (Id)
 );
@@ -316,6 +319,27 @@ END;
 GO
 
 -- Diğer tabloların kendi UpdatedAt trigger'ları
+CREATE TRIGGER trg_JobSector_UpdateModificationTime
+ON JobSector AFTER UPDATE AS
+BEGIN
+    UPDATE JobSector SET UpdatedAt = GETDATE() FROM Inserted i WHERE JobSector.Id = i.Id;
+END;
+GO
+
+CREATE TRIGGER trg_Skill_UpdateModificationTime
+ON Skill AFTER UPDATE AS
+BEGIN
+    UPDATE Skill SET UpdatedAt = GETDATE() FROM Inserted i WHERE Skill.Id = i.Id;
+END;
+GO
+
+CREATE TRIGGER trg_ForeignLanguage_UpdateModificationTime
+ON ForeignLanguage AFTER UPDATE AS
+BEGIN
+    UPDATE ForeignLanguage SET UpdatedAt = GETDATE() FROM Inserted i WHERE ForeignLanguage.Id = i.Id;
+END;
+GO
+
 CREATE TRIGGER trg_Company_UpdateModificationTime
 ON Company AFTER UPDATE AS
 BEGIN
