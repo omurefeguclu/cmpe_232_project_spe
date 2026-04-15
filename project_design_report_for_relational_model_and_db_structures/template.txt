@@ -1,0 +1,57 @@
+
+
+I.	Introduction
+
+This design report delves into the core concepts of the Relational Model and the various database structures that form the foundation of modern database management systems. The emphasis is on understanding how data is organized, stored, and retrieved within the context of the relational database paradigm. Explain your approach on designing the relational database of your project in this section in high level.  
+
+II.	Relational Model 
+
+a.	Definition: 
+In this section, provide a concise yet comprehensive explanation of the relational model employed in your project. The relational model is a conceptual framework used to organize and represent data in a relational database management system (RDBMS). It consists of tables, where each table represents an entity, and columns within the table represent attributes of that entity. Relationships between tables are established using keys, such as primary keys and foreign keys, to maintain data integrity and enforce referential integrity constraints.
+
+b.	Database Schema: 
+In this part of the report, provide the database schema for the project, along with a brief explanation of each table and its purpose within the project scope. 
+
+1)	Relationships: Explain the key relationships and normalization operations applied in the database design as in the following example:
+“One-to-Many Relationship (Employee to Department): Each employee belongs to one department, while a department can have multiple employees. This relationship is established using a Foreign Key constraint in the Employee table referencing the Department table.”
+
+2)	Normalization: Write here the normalization level of each table. 
+The database schema has been normalized to minimize redundancy and dependency issues. This includes breaking down data into smaller, manageable tables and ensuring each table represents a single entity. Normalization operations such as removing repeating groups, minimizing data redundancy, and ensuring data dependencies are adhered to have been applied to improve data integrity and optimize database performance.
+
+ 
+
+III.	Database Structures
+
+In this section, provide a comprehensive overview of the database structures employed in your RDB project. This includes detailing the following components:
+
+Table Structures:
+•	List all tables utilized in the project.
+•	For each table, specify:
+o	Column names and data types (column domains).
+o	Constraints such as NOT NULL, UNIQUE, DEFAULT, CHECK, etc.
+o	Relationships between tables, including primary and foreign keys.
+
+Indices:
+•	Identify any indices created on tables to improve query performance.
+
+Views:
+•	Describe any views created to provide a virtual representation of data from one or more base tables.
+
+Triggers:
+•	Explain any triggers implemented to automatically perform actions in response to specific database events.
+
+By detailing each of these database structures along with relevant SQL statements, users can gain a clear understanding of the underlying architecture and functionality of the RDB project. Additionally, utilizing tools like Windows Forms, WPF, cshtml, etc. to visualize and manage these structures can enhance the development and maintenance process.
+
+IV.	UI Design 
+In this section, you should describe the important steps and requirements for user interface (UI) design. UI design plays a vital role in improving the user experience and enabling users to use the application more effectively. Create design concepts based on user needs and goals. Determine basic functionality and user interaction. Below are sample UI design headings you can use. Based on these, explain all the UI concepts you will use in your application 
+
+●	Login / Registration Page
+●	Admin Page
+●	Start Page
+●	Manage Account
+●	Manage Users
+●	Manage Crimes
+●	Manage Preset Queries
+●	Run SQL Commands
+
+  UI Design Flow
