@@ -1,22 +1,11 @@
 -- ==========================================
 -- SEED DATA FOR RecruitmentDB
 -- Run this AFTER database.sql has been executed.
---
--- Insertion order (FK dependency chain):
---   JobSector, Skill, ForeignLanguage
---   → User (30 rows: 1-10 Candidates, 11-20 Owners, 21-30 Interviewers)
---   → CandidateUser, CompanyOwnerUser, InterviewerUser
---   → Company → JobPosting
---   → CandidateSkills, CandidateForeignLanguages
---   → JobApplication → Interviews
 -- ==========================================
-
 USE RecruitmentDB;
 GO
 
--- ==========================================
--- 1. JobSector  (10 rows — IDENTITY IDs: 1-10)
--- ==========================================
+-- 1. JobSector
 INSERT INTO JobSector (SectorName) VALUES
 ('Technology'),
 ('Finance'),
@@ -27,12 +16,20 @@ INSERT INTO JobSector (SectorName) VALUES
 ('Media & Entertainment'),
 ('Energy'),
 ('Construction'),
-('Logistics');
+('Logistics'),
+('Automotive'),
+('Aerospace'),
+('Agriculture'),
+('Telecommunications'),
+('Hospitality'),
+('Real Estate'),
+('Transportation'),
+('Pharmaceuticals'),
+('Consulting'),
+('Legal');
 GO
 
--- ==========================================
--- 2. Skill  (10 rows — IDENTITY IDs: 1-10)
--- ==========================================
+-- 2. Skill
 INSERT INTO Skill (SkillName) VALUES
 ('Java'),
 ('SQL'),
@@ -43,12 +40,20 @@ INSERT INTO Skill (SkillName) VALUES
 ('Machine Learning'),
 ('Docker & Kubernetes'),
 ('Communication'),
-('Data Analysis');
+('Data Analysis'),
+('Node.js'),
+('AWS'),
+('Azure'),
+('C++'),
+('Go'),
+('Ruby on Rails'),
+('Swift'),
+('Kotlin'),
+('UI/UX Design'),
+('Agile Methodologies');
 GO
 
--- ==========================================
--- 3. ForeignLanguage  (10 rows — IDENTITY IDs: 1-10)
--- ==========================================
+-- 3. ForeignLanguage
 INSERT INTO ForeignLanguage (LanguageName) VALUES
 ('English'),
 ('German'),
@@ -59,216 +64,660 @@ INSERT INTO ForeignLanguage (LanguageName) VALUES
 ('Italian'),
 ('Russian'),
 ('Arabic'),
-('Portuguese');
+('Portuguese'),
+('Korean'),
+('Turkish'),
+('Dutch'),
+('Swedish'),
+('Hindi');
 GO
 
--- ==========================================
--- 4. User  (30 rows — IDENTITY IDs: 1-30)
---    1-10  → will become CandidateUser
---    11-20 → will become CompanyOwnerUser
---    21-30 → will become InterviewerUser
--- ==========================================
+-- 4. User
 INSERT INTO [User] (Email, PasswordHash) VALUES
-('alice.johnson@mail.com',     'hash_cand_01'),  -- Id 1
-('bob.smith@mail.com',         'hash_cand_02'),  -- Id 2
-('carol.lee@mail.com',         'hash_cand_03'),  -- Id 3
-('david.park@mail.com',        'hash_cand_04'),  -- Id 4
-('emma.davis@mail.com',        'hash_cand_05'),  -- Id 5
-('frank.white@mail.com',       'hash_cand_06'),  -- Id 6
-('grace.kim@mail.com',         'hash_cand_07'),  -- Id 7
-('henry.brown@mail.com',       'hash_cand_08'),  -- Id 8
-('iris.taylor@mail.com',       'hash_cand_09'),  -- Id 9
-('jake.wilson@mail.com',       'hash_cand_10'),  -- Id 10
-('carlos.ruiz@company.com',    'hash_own_01'),   -- Id 11
-('diana.chen@company.com',     'hash_own_02'),   -- Id 12
-('evan.thomas@company.com',    'hash_own_03'),   -- Id 13
-('fiona.scott@company.com',    'hash_own_04'),   -- Id 14
-('george.hall@company.com',    'hash_own_05'),   -- Id 15
-('helen.martin@company.com',   'hash_own_06'),   -- Id 16
-('ivan.garcia@company.com',    'hash_own_07'),   -- Id 17
-('julia.adams@company.com',    'hash_own_08'),   -- Id 18
-('kevin.clark@company.com',    'hash_own_09'),   -- Id 19
-('laura.lewis@company.com',    'hash_own_10'),   -- Id 20
-('mike.turner@hr.com',         'hash_int_01'),   -- Id 21
-('nina.walker@hr.com',         'hash_int_02'),   -- Id 22
-('oscar.hill@hr.com',          'hash_int_03'),   -- Id 23
-('paula.young@hr.com',         'hash_int_04'),   -- Id 24
-('quinn.baker@hr.com',         'hash_int_05'),   -- Id 25
-('rachel.green@hr.com',        'hash_int_06'),   -- Id 26
-('sam.porter@hr.com',          'hash_int_07'),   -- Id 27
-('tina.foster@hr.com',         'hash_int_08'),   -- Id 28
-('umar.price@hr.com',          'hash_int_09'),   -- Id 29
-('vera.cox@hr.com',            'hash_int_10');   -- Id 30
+('candidate1@mail.com', 'hash_cand_1'),
+('candidate2@mail.com', 'hash_cand_2'),
+('candidate3@mail.com', 'hash_cand_3'),
+('candidate4@mail.com', 'hash_cand_4'),
+('candidate5@mail.com', 'hash_cand_5'),
+('candidate6@mail.com', 'hash_cand_6'),
+('candidate7@mail.com', 'hash_cand_7'),
+('candidate8@mail.com', 'hash_cand_8'),
+('candidate9@mail.com', 'hash_cand_9'),
+('candidate10@mail.com', 'hash_cand_10'),
+('candidate11@mail.com', 'hash_cand_11'),
+('candidate12@mail.com', 'hash_cand_12'),
+('candidate13@mail.com', 'hash_cand_13'),
+('candidate14@mail.com', 'hash_cand_14'),
+('candidate15@mail.com', 'hash_cand_15'),
+('candidate16@mail.com', 'hash_cand_16'),
+('candidate17@mail.com', 'hash_cand_17'),
+('candidate18@mail.com', 'hash_cand_18'),
+('candidate19@mail.com', 'hash_cand_19'),
+('candidate20@mail.com', 'hash_cand_20'),
+('candidate21@mail.com', 'hash_cand_21'),
+('candidate22@mail.com', 'hash_cand_22'),
+('candidate23@mail.com', 'hash_cand_23'),
+('candidate24@mail.com', 'hash_cand_24'),
+('candidate25@mail.com', 'hash_cand_25'),
+('candidate26@mail.com', 'hash_cand_26'),
+('candidate27@mail.com', 'hash_cand_27'),
+('candidate28@mail.com', 'hash_cand_28'),
+('candidate29@mail.com', 'hash_cand_29'),
+('candidate30@mail.com', 'hash_cand_30'),
+('candidate31@mail.com', 'hash_cand_31'),
+('candidate32@mail.com', 'hash_cand_32'),
+('candidate33@mail.com', 'hash_cand_33'),
+('candidate34@mail.com', 'hash_cand_34'),
+('candidate35@mail.com', 'hash_cand_35'),
+('candidate36@mail.com', 'hash_cand_36'),
+('candidate37@mail.com', 'hash_cand_37'),
+('candidate38@mail.com', 'hash_cand_38'),
+('candidate39@mail.com', 'hash_cand_39'),
+('candidate40@mail.com', 'hash_cand_40'),
+('candidate41@mail.com', 'hash_cand_41'),
+('candidate42@mail.com', 'hash_cand_42'),
+('candidate43@mail.com', 'hash_cand_43'),
+('candidate44@mail.com', 'hash_cand_44'),
+('candidate45@mail.com', 'hash_cand_45'),
+('candidate46@mail.com', 'hash_cand_46'),
+('candidate47@mail.com', 'hash_cand_47'),
+('candidate48@mail.com', 'hash_cand_48'),
+('candidate49@mail.com', 'hash_cand_49'),
+('candidate50@mail.com', 'hash_cand_50'),
+('owner1@company.com', 'hash_own_1'),
+('owner2@company.com', 'hash_own_2'),
+('owner3@company.com', 'hash_own_3'),
+('owner4@company.com', 'hash_own_4'),
+('owner5@company.com', 'hash_own_5'),
+('owner6@company.com', 'hash_own_6'),
+('owner7@company.com', 'hash_own_7'),
+('owner8@company.com', 'hash_own_8'),
+('owner9@company.com', 'hash_own_9'),
+('owner10@company.com', 'hash_own_10'),
+('owner11@company.com', 'hash_own_11'),
+('owner12@company.com', 'hash_own_12'),
+('owner13@company.com', 'hash_own_13'),
+('owner14@company.com', 'hash_own_14'),
+('owner15@company.com', 'hash_own_15'),
+('owner16@company.com', 'hash_own_16'),
+('owner17@company.com', 'hash_own_17'),
+('owner18@company.com', 'hash_own_18'),
+('owner19@company.com', 'hash_own_19'),
+('owner20@company.com', 'hash_own_20'),
+('interviewer1@hr.com', 'hash_int_1'),
+('interviewer2@hr.com', 'hash_int_2'),
+('interviewer3@hr.com', 'hash_int_3'),
+('interviewer4@hr.com', 'hash_int_4'),
+('interviewer5@hr.com', 'hash_int_5'),
+('interviewer6@hr.com', 'hash_int_6'),
+('interviewer7@hr.com', 'hash_int_7'),
+('interviewer8@hr.com', 'hash_int_8'),
+('interviewer9@hr.com', 'hash_int_9'),
+('interviewer10@hr.com', 'hash_int_10'),
+('interviewer11@hr.com', 'hash_int_11'),
+('interviewer12@hr.com', 'hash_int_12'),
+('interviewer13@hr.com', 'hash_int_13'),
+('interviewer14@hr.com', 'hash_int_14'),
+('interviewer15@hr.com', 'hash_int_15'),
+('interviewer16@hr.com', 'hash_int_16'),
+('interviewer17@hr.com', 'hash_int_17'),
+('interviewer18@hr.com', 'hash_int_18'),
+('interviewer19@hr.com', 'hash_int_19'),
+('interviewer20@hr.com', 'hash_int_20');
 GO
 
--- ==========================================
--- 5. CandidateUser  (10 rows — UserId: 1-10)
--- ==========================================
+-- 5. CandidateUser
 INSERT INTO CandidateUser (UserId, ResumeUrl, GitHubProfile) VALUES
-(1,  'https://resume.io/alice-johnson',  'https://github.com/alicejohnson'),
-(2,  'https://resume.io/bob-smith',      'https://github.com/bobsmith'),
-(3,  'https://resume.io/carol-lee',      NULL),
-(4,  'https://resume.io/david-park',     'https://github.com/davidpark'),
-(5,  NULL,                               'https://github.com/emmadavis'),
-(6,  'https://resume.io/frank-white',    NULL),
-(7,  'https://resume.io/grace-kim',      'https://github.com/gracekim'),
-(8,  NULL,                               'https://github.com/henrybrown'),
-(9,  'https://resume.io/iris-taylor',    'https://github.com/iristaylor'),
-(10, 'https://resume.io/jake-wilson',    NULL);
+(1, 'https://resume.io/candidate1', NULL),
+(2, 'https://resume.io/candidate2', NULL),
+(3, 'https://resume.io/candidate3', 'https://github.com/candidate3'),
+(4, 'https://resume.io/candidate4', NULL),
+(5, 'https://resume.io/candidate5', NULL),
+(6, 'https://resume.io/candidate6', 'https://github.com/candidate6'),
+(7, NULL, NULL),
+(8, 'https://resume.io/candidate8', 'https://github.com/candidate8'),
+(9, 'https://resume.io/candidate9', 'https://github.com/candidate9'),
+(10, 'https://resume.io/candidate10', NULL),
+(11, 'https://resume.io/candidate11', 'https://github.com/candidate11'),
+(12, 'https://resume.io/candidate12', NULL),
+(13, 'https://resume.io/candidate13', 'https://github.com/candidate13'),
+(14, NULL, NULL),
+(15, 'https://resume.io/candidate15', 'https://github.com/candidate15'),
+(16, 'https://resume.io/candidate16', 'https://github.com/candidate16'),
+(17, 'https://resume.io/candidate17', 'https://github.com/candidate17'),
+(18, 'https://resume.io/candidate18', 'https://github.com/candidate18'),
+(19, 'https://resume.io/candidate19', 'https://github.com/candidate19'),
+(20, 'https://resume.io/candidate20', 'https://github.com/candidate20'),
+(21, 'https://resume.io/candidate21', NULL),
+(22, 'https://resume.io/candidate22', NULL),
+(23, NULL, NULL),
+(24, NULL, NULL),
+(25, 'https://resume.io/candidate25', 'https://github.com/candidate25'),
+(26, 'https://resume.io/candidate26', NULL),
+(27, 'https://resume.io/candidate27', 'https://github.com/candidate27'),
+(28, 'https://resume.io/candidate28', 'https://github.com/candidate28'),
+(29, NULL, 'https://github.com/candidate29'),
+(30, NULL, 'https://github.com/candidate30'),
+(31, 'https://resume.io/candidate31', 'https://github.com/candidate31'),
+(32, 'https://resume.io/candidate32', 'https://github.com/candidate32'),
+(33, 'https://resume.io/candidate33', 'https://github.com/candidate33'),
+(34, 'https://resume.io/candidate34', NULL),
+(35, 'https://resume.io/candidate35', NULL),
+(36, 'https://resume.io/candidate36', 'https://github.com/candidate36'),
+(37, 'https://resume.io/candidate37', 'https://github.com/candidate37'),
+(38, 'https://resume.io/candidate38', 'https://github.com/candidate38'),
+(39, 'https://resume.io/candidate39', 'https://github.com/candidate39'),
+(40, 'https://resume.io/candidate40', NULL),
+(41, 'https://resume.io/candidate41', NULL),
+(42, 'https://resume.io/candidate42', 'https://github.com/candidate42'),
+(43, 'https://resume.io/candidate43', NULL),
+(44, 'https://resume.io/candidate44', 'https://github.com/candidate44'),
+(45, NULL, NULL),
+(46, NULL, 'https://github.com/candidate46'),
+(47, 'https://resume.io/candidate47', 'https://github.com/candidate47'),
+(48, NULL, 'https://github.com/candidate48'),
+(49, 'https://resume.io/candidate49', 'https://github.com/candidate49'),
+(50, 'https://resume.io/candidate50', 'https://github.com/candidate50');
 GO
 
--- ==========================================
--- 6. CompanyOwnerUser  (10 rows — UserId: 11-20)
--- ==========================================
+-- 6. CompanyOwnerUser
 INSERT INTO CompanyOwnerUser (UserId, VerificationTaxNumber) VALUES
-(11, 'TX-2024-001'),
-(12, 'TX-2024-002'),
-(13, 'TX-2024-003'),
-(14, 'TX-2024-004'),
-(15, 'TX-2024-005'),
-(16, 'TX-2024-006'),
-(17, 'TX-2024-007'),
-(18, 'TX-2024-008'),
-(19, 'TX-2024-009'),
-(20, 'TX-2024-010');
+(51, 'TX-2026-51'),
+(52, 'TX-2026-52'),
+(53, 'TX-2026-53'),
+(54, 'TX-2026-54'),
+(55, 'TX-2026-55'),
+(56, 'TX-2026-56'),
+(57, 'TX-2026-57'),
+(58, 'TX-2026-58'),
+(59, 'TX-2026-59'),
+(60, 'TX-2026-60'),
+(61, 'TX-2026-61'),
+(62, 'TX-2026-62'),
+(63, 'TX-2026-63'),
+(64, 'TX-2026-64'),
+(65, 'TX-2026-65'),
+(66, 'TX-2026-66'),
+(67, 'TX-2026-67'),
+(68, 'TX-2026-68'),
+(69, 'TX-2026-69'),
+(70, 'TX-2026-70');
 GO
 
--- ==========================================
--- 7. InterviewerUser  (10 rows — UserId: 21-30)
--- ==========================================
+-- 7. InterviewerUser
 INSERT INTO InterviewerUser (UserId, Department, Title) VALUES
-(21, 'Engineering',      'Senior Software Engineer'),
-(22, 'Human Resources',  'HR Manager'),
-(23, 'Data Science',     'Data Scientist'),
-(24, 'Product',          'Product Manager'),
-(25, 'Engineering',      'Backend Developer'),
-(26, 'Engineering',      'Frontend Developer'),
-(27, 'DevOps',           'DevOps Engineer'),
-(28, 'Mobile',           'Mobile Developer'),
-(29, 'Quality',          'QA Lead'),
-(30, 'Security',         'Security Engineer');
+(71, 'Engineering', 'Senior Engineering'),
+(72, 'DevOps', 'Manager DevOps'),
+(73, 'HR', 'Manager HR'),
+(74, 'QA', 'Lead QA'),
+(75, 'Security', 'Senior Security'),
+(76, 'DevOps', 'Director DevOps'),
+(77, 'Data Science', 'Director Data Science'),
+(78, 'HR', 'Manager HR'),
+(79, 'Product', 'Lead Product'),
+(80, 'Mobile', 'Lead Mobile'),
+(81, 'Engineering', 'Director Engineering'),
+(82, 'Mobile', 'Specialist Mobile'),
+(83, 'Engineering', 'Senior Engineering'),
+(84, 'Mobile', 'Manager Mobile'),
+(85, 'Product', 'Senior Product'),
+(86, 'Product', 'Director Product'),
+(87, 'HR', 'Senior HR'),
+(88, 'Security', 'Senior Security'),
+(89, 'Data Science', 'Lead Data Science'),
+(90, 'Security', 'Director Security');
 GO
 
--- ==========================================
--- 8. Company  (10 rows — IDENTITY IDs: 1-10)
---    CompanyOwnerId → CompanyOwnerUser.UserId (11-20)
---    JobSectorId    → JobSector.Id            (1-10)
--- ==========================================
+-- 8. Company
 INSERT INTO Company (CompanyOwnerId, JobSectorId, CompanyName) VALUES
-(11, 1,  'TechCorp Inc.'),
-(12, 2,  'FinanceHub Ltd.'),
-(13, 3,  'MediCare Solutions'),
-(14, 4,  'EduLearn Platform'),
-(15, 5,  'ManufactoPro'),
-(16, 6,  'RetailMax'),
-(17, 7,  'MediaVerse'),
-(18, 8,  'EnergyWorks'),
-(19, 9,  'Buildex Construction'),
-(20, 10, 'LogiFlow Logistics');
+(51, 6, 'Company_1 Inc.'),
+(52, 9, 'Company_2 Inc.'),
+(53, 17, 'Company_3 Inc.'),
+(54, 20, 'Company_4 Inc.'),
+(55, 14, 'Company_5 Inc.'),
+(56, 7, 'Company_6 Inc.'),
+(57, 18, 'Company_7 Inc.'),
+(58, 7, 'Company_8 Inc.'),
+(59, 10, 'Company_9 Inc.'),
+(60, 13, 'Company_10 Inc.'),
+(61, 12, 'Company_11 Inc.'),
+(62, 15, 'Company_12 Inc.'),
+(63, 17, 'Company_13 Inc.'),
+(64, 15, 'Company_14 Inc.'),
+(65, 4, 'Company_15 Inc.'),
+(66, 8, 'Company_16 Inc.'),
+(67, 8, 'Company_17 Inc.'),
+(68, 3, 'Company_18 Inc.'),
+(69, 11, 'Company_19 Inc.'),
+(70, 1, 'Company_20 Inc.');
 GO
 
--- ==========================================
--- 9. JobPosting  (10 rows — Weak Entity, IDENTITY IDs: 1-10)
---    CompanyId → Company.Id (1-10)
--- ==========================================
+-- 9. JobPosting
 INSERT INTO JobPosting (CompanyId, Title, Description) VALUES
-(1,  'Backend Software Engineer',
-     'We are looking for a skilled backend developer with Java or .NET experience to join our core platform team.'),
-(2,  'Financial Data Analyst',
-     'Seeking a detail-oriented analyst to support financial reporting and business intelligence operations.'),
-(3,  'Healthcare Software Consultant',
-     'Build and maintain healthcare information systems that serve thousands of patients daily.'),
-(4,  'E-Learning Content Developer',
-     'Design and develop interactive online learning modules for our global education platform.'),
-(5,  'CNC Machine Operator',
-     'Operate and maintain CNC machines in a modern manufacturing environment.'),
-(6,  'Retail Store Manager',
-     'Lead daily store operations, coach your team, and deliver exceptional customer experience.'),
-(7,  'Video Content Producer',
-     'Produce and edit high-quality video content across our digital media channels.'),
-(8,  'Renewable Energy Engineer',
-     'Design and deploy next-generation solar and wind energy solutions.'),
-(9,  'Civil Site Engineer',
-     'Oversee construction projects ensuring compliance with safety standards and timelines.'),
-(10, 'Logistics Coordinator',
-     'Coordinate shipments, manage vendor relationships, and optimize supply chain operations.');
+(19, 'Job Title 1', 'Description for job 1 at company 19.'),
+(18, 'Job Title 2', 'Description for job 2 at company 18.'),
+(8, 'Job Title 3', 'Description for job 3 at company 8.'),
+(19, 'Job Title 4', 'Description for job 4 at company 19.'),
+(8, 'Job Title 5', 'Description for job 5 at company 8.'),
+(1, 'Job Title 6', 'Description for job 6 at company 1.'),
+(3, 'Job Title 7', 'Description for job 7 at company 3.'),
+(2, 'Job Title 8', 'Description for job 8 at company 2.'),
+(8, 'Job Title 9', 'Description for job 9 at company 8.'),
+(3, 'Job Title 10', 'Description for job 10 at company 3.'),
+(2, 'Job Title 11', 'Description for job 11 at company 2.'),
+(11, 'Job Title 12', 'Description for job 12 at company 11.'),
+(3, 'Job Title 13', 'Description for job 13 at company 3.'),
+(17, 'Job Title 14', 'Description for job 14 at company 17.'),
+(8, 'Job Title 15', 'Description for job 15 at company 8.'),
+(9, 'Job Title 16', 'Description for job 16 at company 9.'),
+(16, 'Job Title 17', 'Description for job 17 at company 16.'),
+(7, 'Job Title 18', 'Description for job 18 at company 7.'),
+(18, 'Job Title 19', 'Description for job 19 at company 18.'),
+(5, 'Job Title 20', 'Description for job 20 at company 5.'),
+(19, 'Job Title 21', 'Description for job 21 at company 19.'),
+(19, 'Job Title 22', 'Description for job 22 at company 19.'),
+(16, 'Job Title 23', 'Description for job 23 at company 16.'),
+(8, 'Job Title 24', 'Description for job 24 at company 8.'),
+(16, 'Job Title 25', 'Description for job 25 at company 16.'),
+(14, 'Job Title 26', 'Description for job 26 at company 14.'),
+(7, 'Job Title 27', 'Description for job 27 at company 7.'),
+(4, 'Job Title 28', 'Description for job 28 at company 4.'),
+(4, 'Job Title 29', 'Description for job 29 at company 4.'),
+(14, 'Job Title 30', 'Description for job 30 at company 14.'),
+(12, 'Job Title 31', 'Description for job 31 at company 12.'),
+(14, 'Job Title 32', 'Description for job 32 at company 14.'),
+(14, 'Job Title 33', 'Description for job 33 at company 14.'),
+(15, 'Job Title 34', 'Description for job 34 at company 15.'),
+(2, 'Job Title 35', 'Description for job 35 at company 2.'),
+(4, 'Job Title 36', 'Description for job 36 at company 4.'),
+(2, 'Job Title 37', 'Description for job 37 at company 2.'),
+(13, 'Job Title 38', 'Description for job 38 at company 13.'),
+(11, 'Job Title 39', 'Description for job 39 at company 11.'),
+(4, 'Job Title 40', 'Description for job 40 at company 4.'),
+(8, 'Job Title 41', 'Description for job 41 at company 8.'),
+(7, 'Job Title 42', 'Description for job 42 at company 7.'),
+(7, 'Job Title 43', 'Description for job 43 at company 7.'),
+(18, 'Job Title 44', 'Description for job 44 at company 18.'),
+(15, 'Job Title 45', 'Description for job 45 at company 15.'),
+(5, 'Job Title 46', 'Description for job 46 at company 5.'),
+(14, 'Job Title 47', 'Description for job 47 at company 14.'),
+(6, 'Job Title 48', 'Description for job 48 at company 6.'),
+(9, 'Job Title 49', 'Description for job 49 at company 9.'),
+(15, 'Job Title 50', 'Description for job 50 at company 15.');
 GO
 
--- ==========================================
--- 10. CandidateSkills  (10 rows — IDENTITY IDs: 1-10)
---     UNIQUE(CandidateId, SkillId) — diagonal mapping avoids duplicates
---     CandidateId → CandidateUser.UserId (1-10)
---     SkillId     → Skill.Id            (1-10)
--- ==========================================
+-- 10. CandidateSkills
 INSERT INTO CandidateSkills (CandidateId, SkillId, ProficiencyLevel) VALUES
-(1,  1,  'Expert'),
-(2,  2,  'Advanced'),
-(3,  3,  'Intermediate'),
-(4,  4,  'Expert'),
-(5,  5,  'Advanced'),
-(6,  6,  'Beginner'),
-(7,  7,  'Intermediate'),
-(8,  8,  'Advanced'),
-(9,  9,  'Expert'),
-(10, 10, 'Beginner');
+(14, 13, 'Beginner'),
+(11, 14, 'Advanced'),
+(26, 5, 'Intermediate'),
+(1, 15, 'Advanced'),
+(38, 16, 'Beginner'),
+(21, 9, 'Beginner'),
+(4, 2, 'Expert'),
+(37, 8, 'Advanced'),
+(28, 5, 'Advanced'),
+(37, 17, 'Expert'),
+(30, 11, 'Beginner'),
+(24, 10, 'Expert'),
+(35, 10, 'Intermediate'),
+(16, 6, 'Advanced'),
+(7, 3, 'Beginner'),
+(24, 19, 'Expert'),
+(18, 3, 'Beginner'),
+(45, 5, 'Intermediate'),
+(27, 8, 'Advanced'),
+(8, 4, 'Expert'),
+(9, 12, 'Beginner'),
+(32, 16, 'Advanced'),
+(42, 18, 'Advanced'),
+(43, 16, 'Beginner'),
+(39, 3, 'Advanced'),
+(26, 18, 'Advanced'),
+(31, 8, 'Expert'),
+(3, 10, 'Advanced'),
+(11, 2, 'Expert'),
+(28, 18, 'Advanced'),
+(44, 8, 'Intermediate'),
+(1, 3, 'Intermediate'),
+(33, 17, 'Expert'),
+(26, 11, 'Expert'),
+(17, 2, 'Intermediate'),
+(4, 11, 'Advanced'),
+(35, 7, 'Expert'),
+(26, 4, 'Beginner'),
+(16, 3, 'Advanced'),
+(19, 20, 'Advanced'),
+(23, 17, 'Intermediate'),
+(9, 9, 'Expert'),
+(43, 4, 'Advanced'),
+(33, 3, 'Expert'),
+(2, 6, 'Expert'),
+(7, 2, 'Expert'),
+(18, 2, 'Intermediate'),
+(45, 4, 'Expert'),
+(38, 20, 'Intermediate'),
+(40, 17, 'Beginner'),
+(23, 10, 'Advanced'),
+(4, 6, 'Advanced'),
+(41, 9, 'Beginner'),
+(35, 2, 'Intermediate'),
+(24, 2, 'Advanced'),
+(25, 1, 'Intermediate'),
+(1, 18, 'Intermediate'),
+(48, 5, 'Intermediate'),
+(12, 3, 'Beginner'),
+(40, 19, 'Beginner'),
+(14, 9, 'Intermediate'),
+(50, 5, 'Expert'),
+(33, 16, 'Beginner'),
+(1, 11, 'Expert'),
+(16, 9, 'Expert'),
+(12, 14, 'Intermediate'),
+(14, 11, 'Expert'),
+(4, 19, 'Expert'),
+(30, 10, 'Expert'),
+(10, 7, 'Intermediate'),
+(33, 9, 'Intermediate'),
+(11, 15, 'Beginner'),
+(49, 8, 'Beginner'),
+(48, 18, 'Expert'),
+(23, 7, 'Intermediate'),
+(36, 1, 'Intermediate'),
+(50, 9, 'Expert'),
+(8, 3, 'Beginner'),
+(10, 9, 'Intermediate'),
+(48, 11, 'Beginner'),
+(15, 8, 'Expert'),
+(20, 4, 'Intermediate'),
+(22, 1, 'Expert'),
+(6, 14, 'Advanced'),
+(23, 18, 'Expert'),
+(25, 9, 'Expert'),
+(2, 7, 'Expert'),
+(49, 3, 'Intermediate'),
+(18, 6, 'Expert'),
+(29, 18, 'Expert'),
+(36, 5, 'Advanced'),
+(36, 14, 'Intermediate'),
+(5, 8, 'Advanced'),
+(19, 7, 'Expert'),
+(27, 20, 'Intermediate'),
+(3, 20, 'Advanced'),
+(25, 2, 'Expert'),
+(43, 10, 'Beginner'),
+(43, 19, 'Advanced'),
+(13, 15, 'Intermediate');
 GO
 
--- ==========================================
--- 11. CandidateForeignLanguages  (10 rows — IDENTITY IDs: 1-10)
---     UNIQUE(CandidateId, ForeignLanguageId) — diagonal mapping avoids duplicates
---     CandidateId      → CandidateUser.UserId   (1-10)
---     ForeignLanguageId → ForeignLanguage.Id    (1-10)
--- ==========================================
+-- 11. CandidateForeignLanguages
 INSERT INTO CandidateForeignLanguages (CandidateId, ForeignLanguageId, ProficiencyLevel) VALUES
-(1,  1,  'C2'),
-(2,  2,  'B2'),
-(3,  3,  'B1'),
-(4,  4,  'C1'),
-(5,  5,  'A2'),
-(6,  6,  'B1'),
-(7,  7,  'C1'),
-(8,  8,  'A1'),
-(9,  9,  'B2'),
-(10, 10, 'C2');
+(23, 4, 'A1'),
+(45, 1, 'B1'),
+(42, 2, 'C1'),
+(3, 13, 'B2'),
+(5, 10, 'C2'),
+(9, 8, 'B1'),
+(11, 5, 'A1'),
+(2, 2, 'C1'),
+(11, 14, 'C2'),
+(35, 8, 'B1'),
+(15, 5, 'A1'),
+(7, 10, 'B2'),
+(45, 3, 'B2'),
+(27, 6, 'A1'),
+(9, 10, 'B2'),
+(2, 4, 'B1'),
+(46, 4, 'C2'),
+(35, 1, 'B2'),
+(44, 13, 'C2'),
+(15, 7, 'A2'),
+(7, 12, 'B2'),
+(39, 10, 'A2'),
+(45, 14, 'C2'),
+(14, 8, 'C1'),
+(9, 3, 'C2'),
+(24, 3, 'B1'),
+(44, 15, 'C1'),
+(27, 1, 'C1'),
+(5, 7, 'B2'),
+(9, 14, 'B2'),
+(13, 14, 'B2'),
+(20, 10, 'C2'),
+(43, 2, 'C1'),
+(44, 10, 'B1'),
+(25, 6, 'B1'),
+(14, 14, 'A2'),
+(50, 10, 'A1'),
+(8, 13, 'B1'),
+(25, 8, 'B2'),
+(2, 15, 'A2'),
+(48, 12, 'B2'),
+(22, 11, 'C1'),
+(35, 2, 'C1'),
+(30, 15, 'C2'),
+(26, 12, 'B2'),
+(6, 8, 'B1'),
+(21, 6, 'A1'),
+(21, 15, 'B2'),
+(37, 11, 'B1'),
+(50, 5, 'A2'),
+(35, 13, 'B2'),
+(2, 10, 'A2'),
+(49, 15, 'B1'),
+(37, 4, 'B1'),
+(27, 5, 'B1'),
+(41, 4, 'B1'),
+(17, 13, 'C1'),
+(25, 5, 'C2'),
+(25, 14, 'B1'),
+(2, 12, 'C1'),
+(39, 15, 'A1'),
+(27, 7, 'C1'),
+(30, 3, 'A2'),
+(30, 12, 'A1'),
+(1, 6, 'A2'),
+(25, 7, 'C2'),
+(49, 10, 'B2'),
+(15, 8, 'B2'),
+(20, 13, 'C1'),
+(4, 5, 'A2'),
+(27, 9, 'C2'),
+(50, 11, 'B2'),
+(28, 8, 'C2'),
+(42, 7, 'C2'),
+(2, 7, 'B2'),
+(26, 10, 'B2'),
+(18, 6, 'A1'),
+(37, 13, 'A1'),
+(10, 4, 'B1'),
+(49, 14, 'A2');
 GO
 
--- ==========================================
--- 12. JobApplication  (10 rows — IDENTITY IDs: 1-10)
---     UNIQUE(CandidateId, JobPostingId) — diagonal mapping avoids duplicates
---     CandidateId  → CandidateUser.UserId (1-10)
---     JobPostingId → JobPosting.Id        (1-10)
---     FK_JobApplication_JobPosting is ON DELETE NO ACTION;
---     cascade is handled by trigger trg_JobPosting_CascadeDeleteApplications
--- ==========================================
+-- 12. JobApplication
 INSERT INTO JobApplication (CandidateId, JobPostingId, ApplicationStatus) VALUES
-(1,  1,  'Pending'),
-(2,  2,  'Pending'),
-(3,  3,  'Pending'),
-(4,  4,  'In Review'),
-(5,  5,  'In Review'),
-(6,  6,  'In Review'),
-(7,  7,  'Accepted'),
-(8,  8,  'Accepted'),
-(9,  9,  'Rejected'),
-(10, 10, 'Rejected');
+(12, 4, 'Rejected'),
+(16, 20, 'Accepted'),
+(19, 46, 'In Review'),
+(48, 36, 'Rejected'),
+(20, 38, 'Rejected'),
+(5, 37, 'Pending'),
+(7, 1, 'Rejected'),
+(3, 49, 'Accepted'),
+(6, 11, 'Rejected'),
+(26, 32, 'Accepted'),
+(8, 48, 'Accepted'),
+(45, 12, 'Pending'),
+(18, 37, 'In Review'),
+(3, 15, 'Accepted'),
+(31, 31, 'Rejected'),
+(45, 30, 'Rejected'),
+(21, 39, 'Accepted'),
+(29, 6, 'Rejected'),
+(18, 3, 'Pending'),
+(13, 19, 'Rejected'),
+(13, 28, 'Pending'),
+(41, 44, 'Accepted'),
+(48, 31, 'Accepted'),
+(12, 20, 'Accepted'),
+(37, 19, 'Pending'),
+(38, 2, 'Rejected'),
+(44, 15, 'Pending'),
+(27, 29, 'Rejected'),
+(16, 8, 'Rejected'),
+(13, 21, 'Pending'),
+(39, 3, 'In Review'),
+(1, 46, 'Accepted'),
+(49, 32, 'Rejected'),
+(29, 29, 'Rejected'),
+(22, 23, 'Pending'),
+(34, 25, 'In Review'),
+(4, 36, 'Accepted'),
+(36, 34, 'In Review'),
+(13, 14, 'Accepted'),
+(35, 32, 'Rejected'),
+(28, 48, 'Rejected'),
+(19, 45, 'Pending'),
+(29, 22, 'Pending'),
+(31, 19, 'In Review'),
+(17, 2, 'In Review'),
+(4, 11, 'Accepted'),
+(38, 43, 'Pending'),
+(15, 50, 'Rejected'),
+(41, 14, 'Pending'),
+(34, 39, 'In Review'),
+(45, 39, 'Pending'),
+(16, 12, 'Rejected'),
+(19, 29, 'Pending'),
+(17, 41, 'In Review'),
+(44, 37, 'Rejected'),
+(8, 47, 'Accepted'),
+(48, 37, 'Accepted'),
+(35, 9, 'Rejected'),
+(4, 40, 'Rejected'),
+(17, 43, 'Rejected'),
+(10, 37, 'In Review'),
+(6, 15, 'Rejected'),
+(26, 45, 'In Review'),
+(23, 28, 'Rejected'),
+(36, 49, 'In Review'),
+(9, 41, 'In Review'),
+(38, 49, 'Pending'),
+(10, 5, 'Accepted'),
+(28, 20, 'Rejected'),
+(27, 39, 'Accepted'),
+(48, 7, 'Accepted'),
+(8, 35, 'Pending'),
+(43, 38, 'Accepted'),
+(4, 10, 'Accepted'),
+(45, 20, 'Rejected'),
+(20, 39, 'In Review'),
+(17, 31, 'Rejected'),
+(15, 24, 'Rejected'),
+(18, 20, 'Accepted'),
+(15, 42, 'Accepted'),
+(49, 44, 'Rejected'),
+(17, 15, 'Rejected'),
+(18, 47, 'Accepted'),
+(10, 18, 'In Review'),
+(8, 30, 'In Review'),
+(8, 5, 'Rejected'),
+(30, 5, 'In Review'),
+(11, 1, 'Rejected'),
+(31, 34, 'Pending'),
+(49, 12, 'Accepted'),
+(20, 6, 'Rejected'),
+(24, 31, 'Rejected'),
+(36, 5, 'Rejected'),
+(18, 33, 'In Review'),
+(35, 49, 'Rejected'),
+(19, 7, 'Pending'),
+(39, 40, 'In Review'),
+(45, 26, 'Accepted'),
+(37, 40, 'Pending'),
+(49, 14, 'Rejected');
 GO
 
--- ==========================================
--- 13. Interviews  (10 rows — IDENTITY IDs: 1-10)
---     ApplicationId → JobApplication.Id        (1-10)
---     InterviewerId → InterviewerUser.UserId   (21-30)
---     FK_Interviews_Interviewer is ON DELETE NO ACTION (no cascade by design)
---     Completed interviews have Score + Notes; Scheduled/Cancelled do not.
--- ==========================================
+-- 13. Interviews
 INSERT INTO Interviews (ApplicationId, InterviewerId, ScheduledDate, Status, Score, Notes) VALUES
-(1,  21, '2026-04-01 10:00:00', 'Scheduled', NULL, NULL),
-(2,  22, '2026-04-03 11:00:00', 'Scheduled', NULL, NULL),
-(3,  23, '2026-04-07 09:30:00', 'Scheduled', NULL, NULL),
-(4,  24, '2026-04-10 14:00:00', 'Scheduled', NULL, NULL),
-(5,  25, '2026-03-10 10:00:00', 'Completed', 85,   'Strong technical skills, communicates well.'),
-(6,  26, '2026-03-12 11:00:00', 'Completed', 72,   'Solid experience but some gaps in system design.'),
-(7,  27, '2026-03-15 13:00:00', 'Completed', 91,   'Excellent candidate, highly recommended for hire.'),
-(8,  28, '2026-03-18 15:00:00', 'Completed', 60,   'Average performance; needs improvement in algorithms.'),
-(9,  29, '2026-03-20 09:00:00', 'Cancelled', NULL, 'Candidate did not attend the scheduled interview.'),
-(10, 30, '2026-03-22 10:00:00', 'Cancelled', NULL, 'Rescheduling requested by the interviewer.');
+(13, 87, '2026-06-01 10:00:00', 'Completed', 40, 'Notes for interview 1'),
+(93, 75, '2026-06-01 10:00:00', 'Completed', 95, 'Notes for interview 2'),
+(84, 75, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(61, 79, '2026-06-01 10:00:00', 'Completed', 79, 'Notes for interview 4'),
+(89, 83, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 5'),
+(11, 81, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 6'),
+(69, 83, '2026-06-01 10:00:00', 'Completed', 80, 'Notes for interview 7'),
+(92, 86, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 8'),
+(5, 90, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(31, 80, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(96, 73, '2026-06-01 10:00:00', 'Completed', 46, 'Notes for interview 11'),
+(98, 74, '2026-06-01 10:00:00', 'Completed', 50, 'Notes for interview 12'),
+(89, 80, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(6, 81, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(38, 82, '2026-06-01 10:00:00', 'Completed', 67, 'Notes for interview 15'),
+(19, 78, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 16'),
+(53, 89, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 17'),
+(24, 76, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(11, 90, '2026-06-01 10:00:00', 'Completed', 79, 'Notes for interview 19'),
+(88, 78, '2026-06-01 10:00:00', 'Completed', 98, 'Notes for interview 20'),
+(75, 75, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(60, 79, '2026-06-01 10:00:00', 'Completed', 56, 'Notes for interview 22'),
+(86, 71, '2026-06-01 10:00:00', 'Completed', 97, 'Notes for interview 23'),
+(37, 88, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(10, 85, '2026-06-01 10:00:00', 'Completed', 77, 'Notes for interview 25'),
+(39, 84, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 26'),
+(33, 85, '2026-06-01 10:00:00', 'Completed', 52, 'Notes for interview 27'),
+(50, 86, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(31, 83, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 29'),
+(46, 89, '2026-06-01 10:00:00', 'Completed', 84, 'Notes for interview 30'),
+(38, 71, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 31'),
+(51, 79, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(73, 72, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 33'),
+(96, 86, '2026-06-01 10:00:00', 'Completed', 89, 'Notes for interview 34'),
+(30, 90, '2026-06-01 10:00:00', 'Completed', 54, 'Notes for interview 35'),
+(82, 77, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 36'),
+(33, 75, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 37'),
+(13, 72, '2026-06-01 10:00:00', 'Completed', 90, 'Notes for interview 38'),
+(57, 72, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 39'),
+(47, 75, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(38, 81, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 41'),
+(54, 76, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(17, 88, '2026-06-01 10:00:00', 'Completed', 73, 'Notes for interview 43'),
+(65, 79, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(33, 86, '2026-06-01 10:00:00', 'Completed', 87, 'Notes for interview 45'),
+(44, 74, '2026-06-01 10:00:00', 'Completed', 44, 'Notes for interview 46'),
+(19, 78, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 47'),
+(93, 83, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 48'),
+(47, 73, '2026-06-01 10:00:00', 'Completed', 40, 'Notes for interview 49'),
+(34, 88, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(59, 82, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 51'),
+(96, 79, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 52'),
+(49, 82, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(87, 78, '2026-06-01 10:00:00', 'Completed', 41, 'Notes for interview 54'),
+(80, 88, '2026-06-01 10:00:00', 'Completed', 98, 'Notes for interview 55'),
+(79, 78, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 56'),
+(9, 85, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 57'),
+(39, 84, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(18, 72, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(39, 86, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(13, 78, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 61'),
+(18, 83, '2026-06-01 10:00:00', 'Completed', 63, 'Notes for interview 62'),
+(86, 88, '2026-06-01 10:00:00', 'Completed', 77, 'Notes for interview 63'),
+(96, 75, '2026-06-01 10:00:00', 'Completed', 81, 'Notes for interview 64'),
+(13, 86, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 65'),
+(53, 79, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(89, 82, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(57, 85, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(47, 74, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 69'),
+(48, 88, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 70'),
+(46, 72, '2026-06-01 10:00:00', 'Completed', 57, 'Notes for interview 71'),
+(25, 74, '2026-06-01 10:00:00', 'Completed', 45, 'Notes for interview 72'),
+(85, 77, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 73'),
+(82, 90, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(7, 81, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(17, 89, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(9, 88, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(76, 77, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL),
+(43, 75, '2026-06-01 10:00:00', 'Cancelled', NULL, 'Notes for interview 79'),
+(1, 79, '2026-06-01 10:00:00', 'Scheduled', NULL, NULL);
 GO
