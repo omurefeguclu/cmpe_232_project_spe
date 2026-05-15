@@ -164,6 +164,7 @@ INSERT INTO [User] (Email, PasswordHash) VALUES
 ('interviewer18@hr.com', 'hash_int_18'),
 ('interviewer19@hr.com', 'hash_int_19'),
 ('interviewer20@hr.com', 'hash_int_20');
+('admin@admin.com', '123123')
 GO
 
 -- 5. CandidateUser
